@@ -20,7 +20,7 @@ These commands can be executed at BDS console, or by OPs in game.
 
 At `plugins/BackupHelper/config.ini`, with comments in file
 
-```
+```ini
 [Main]
 ; 语言
 Language=zh_CN
