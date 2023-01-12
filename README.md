@@ -1,29 +1,41 @@
-# LiteLoaderBDS C++ Plugin Template
+# BackupHelper
 
-The template repository for LiteLoaderBDS C++ plugin development.
+> A LiteLoaderBDS plugin to help you backup more easily
 
 ## Usage
 
-* Write and build your plugin
+`/backup` - Start backup now
 
-  Please refer to [LiteLoaderBDS C++ Plugin Development Documentation](https://cpp.docs.litebds.com/en/) or [LiteLoaderBDS C++ 插件开发文档](https://cpp.docs.litebds.com/zh-Hans/).
+`/backup list` - List all backups existing
 
-* Edit README.md and LICENSE
+`/backup recover [number]` - Select recover to a certain backup version, and restart server to finish recover process
 
-  You ought not to keep the original README.md, for it contains instructions on how to build your own plugin, which might not fit your plugin repository. The README.md of your repository should contain instructions on how to build, install and use your plugin.
+`/backup reload` - Reload config file
 
-  You don't necessarily want your repository to be open sourced under the Unlicense, so please choose your own license in place of the `LICENSE` file.
+These commands can be executed at BDS console, or by OPs in game.
 
-## For Beta Developers
 
-If you would like to experience the latest features for plugins in beta versions of LiteLoaderBDS, you can switch the branch of the SDK to beta. Run the commands below under the plugin repository:
 
-```sh
-git submodule set-branch --branch beta SDK
-git submodule update --init --remote
+## Config file
+
+At `plugins/BackupHelper/config.ini`, with comments in file
+
+```
+[Main]
+; 语言
+Language=zh_CN
+
+; 备份存档保存的最长时间，单位：天
+MaxStorageTime=7
+
+; 备份文件夹位置
+BackupPath=.\backup
+
+; 备份文件压缩等级，可选等级有0,1,3,5,7,9
+; 默认为0，即仅打包
+Compress=0
+
+; 等待压缩的最长时间，单位：秒，如果为0则无限等待
+MaxWaitForZip=1800
 ```
 
-## License
-
-This repository is open source under the Unlicense.
-Please refer to [the license file](LICENSE) for further information.
