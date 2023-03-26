@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <regex>
 #include <llapi/mc/Player.hpp>
+#include <llapi/ScheduleAPI.h>
 using namespace std;
 
 #define TEMP_DIR "./plugins/BackupHelper/temp/"
@@ -392,8 +393,7 @@ bool StartRecover(int recover_NUM)
     return true;
 }
 
-#define RETRY_TIME 60
-int resumeTime = -1;
+#define RETRY_TICKS 60
 
 void ResumeBackup()
 {
@@ -403,39 +403,19 @@ void ResumeBackup()
         if (!res.first)
         {
             SendFeedback(nowPlayer, "Failed to resume backup snapshot!");
-            if (isWorking)
-                resumeTime = RETRY_TIME;
-            else
-                resumeTime = -1;
+            Schedule::delay(ResumeBackup, RETRY_TICKS);
         }
         else
         {
             SendFeedback(nowPlayer, res.second);
-            resumeTime = -1;
         }
     }
     catch (const seh_exception& e)
     {
         SendFeedback(nowPlayer, "Failed to resume backup snapshot! Error Code:" + to_string(e.code()));
-        if (isWorking)
-            resumeTime = RETRY_TIME;
-        else
-            resumeTime = -1;
+        if(isWorking)
+            Schedule::delay(ResumeBackup, RETRY_TICKS);
     }
-}
-
-THook(void, "?tick@ServerLevel@@UEAAXXZ",
-    void* _this)
-{
-    if (resumeTime > 0)
-        --resumeTime;
-    else if (resumeTime == 0)
-    {
-        if (!isWorking)
-            resumeTime = -1;
-        ResumeBackup();
-    }
-    return original(_this);
 }
 
 THook(vector<SnapshotFilenameAndLength>&, "?createSnapshot@DBStorage@@UEAA?AV?$vector@USnapshotFilenameAndLength@@V?$allocator@USnapshotFilenameAndLength@@@std@@@std@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@3@@Z",
@@ -456,7 +436,7 @@ THook(vector<SnapshotFilenameAndLength>&, "?createSnapshot@DBStorage@@UEAA?AV?$v
                 }).detach();
         }
 
-        resumeTime = 20;
+        Schedule::delay(ResumeBackup, 20);
         return files;
     }
     else {
