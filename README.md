@@ -2,6 +2,12 @@
 
 > A LiteLoaderBDS plugin to help you backup more easily
 
+## Download
+
+[LL - BackupHelper | MineBBS](https://www.minebbs.com/resources/backuphelper-_-bds.2685/)
+
+
+
 ## Usage
 
 `/backup` - Start backup now
